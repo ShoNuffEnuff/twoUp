@@ -16,7 +16,7 @@
          <children>
             <ImageView fitHeight="400.0" fitWidth="223.0" pickOnBounds="true">
                <image>
-                  <Image url="@../../../winyou.gif" />
+                  <Image url="@../../../img/winyou.gif" />
                </image>
             </ImageView>
          </children>
@@ -27,7 +27,7 @@
          <children>
             <ImageView blendMode="LIGHTEN" fitHeight="400.0" fitWidth="378.0" pickOnBounds="true">
                <image>
-                  <Image url="@../../../.././resources/AcademyIT_Icon_CMYK.png" />
+                  <Image url="@../../../img/AcademyIT_Icon_CMYK.png" />
                </image>
             </ImageView>
             <Label layoutX="147.0" layoutY="146.0" text="Username" textFill="#171263">
@@ -51,7 +51,7 @@
             </Label>
             <ImageView blendMode="DARKEN" fitHeight="106.0" fitWidth="150.0" layoutX="135.0" layoutY="30.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../../../.././resources/2coins.png" />
+                  <Image url="@../../../img/2coins.png" />
                </image>
             </ImageView>
          </children>

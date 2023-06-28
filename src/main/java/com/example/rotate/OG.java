@@ -125,7 +125,7 @@ public class OG extends Application {
     }
 
     private Background createBackground() {
-        Image backgroundImage = new Image("aussieflag.gif");
+        Image backgroundImage = new Image("img/aussieflag.gif");
         BackgroundImage backgroundImg = new BackgroundImage(backgroundImage, null, null, null,
                 new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, true));
         return new Background(backgroundImg);
@@ -162,25 +162,25 @@ public class OG extends Application {
                 score.setText("Wins " + winCount);
                 coin1.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\Rotate\\src\\main\\resources\\gold1.png"), 0, 0, 1, 1, true));
                 coin2.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\Rotate\\src\\main\\resources\\gold1.png"), 0, 0, 1, 1, true));
-                showAlertWithAnimation("Flip Result", "You Win!", "winner.gif");
+                showAlertWithAnimation("Flip Result", "You Win!", "img/winner.gif");
             } else if (result.equals("tails") && result2.equals("tails") && choice.equals("tails")) {
                 winCount++;
                 score.setText("Wins " + winCount);
                 coin1.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\Rotate\\src\\main\\resources\\gold2.png"), 0, 0, 1, 1, true));
                 coin2.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\Rotate\\src\\main\\resources\\gold2.png"), 0, 0, 1, 1, true));
-                showAlertWithAnimation("Flip Result", "You Win!", "winner.gif");
+                showAlertWithAnimation("Flip Result", "You Win!", "img/winner.gif");
             } else if (result.equals("tails") && result2.equals("tails") && choice.equals("heads")) {
                 loseCount++;
                 score2.setText("Losses " + loseCount);
                 coin1.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\Rotate\\src\\main\\resources\\gold2.png"), 0, 0, 1, 1, true));
                 coin2.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\Rotate\\src\\main\\resources\\gold2.png"), 0, 0, 1, 1, true));
-                showAlertWithAnimation("Flip Result", "You Lose!", "loser.gif");
+                showAlertWithAnimation("Flip Result", "You Lose!", "img/loser.gif");
             } else if (result.equals("heads") && result2.equals("heads") && choice.equals("tails")) {
                 loseCount++;
                 score2.setText("Losses " + loseCount);
                 coin1.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\Rotate\\src\\main\\resources\\gold1.png"), 0, 0, 1, 1, true));
                 coin2.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\Rotate\\src\\main\\resources\\gold1.png"), 0, 0, 1, 1, true));
-                showAlertWithAnimation("Flip Result", "You Lose!", "loser.gif");
+                showAlertWithAnimation("Flip Result", "You Lose!", "img/loser.gif");
             } else if (result.equals("tails") && result2.equals("heads") && choice.equals("tails")) {
                 coin1.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\Rotate\\src\\main\\resources\\gold2.png"), 0, 0, 1, 1, true));
                 coin2.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\Rotate\\src\\main\\resources\\gold1.png"), 0, 0, 1, 1, true));
