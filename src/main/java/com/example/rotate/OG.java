@@ -1,26 +1,24 @@
 package com.example.rotate;
 
+import javafx.animation.Animation;
+import javafx.animation.PauseTransition;
+import javafx.animation.RotateTransition;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Circle;
+import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class OG extends Application {
 
@@ -28,159 +26,290 @@ public class OG extends Application {
     static int loseCount = 0;
     static Label score;
     static Label score2;
-    static TextField nameField;
+    static Circle coin1;
+    static Circle coin2;
     static Button button;
     static Button button2;
     static Button sbutton;
     static Button ccbutton;
-    static Image image;
-    static ImageView imageView;
-    static Connection connection;
+    static TextField usernameField;
+    static PasswordField passwordField;
+    static Label playerName;
+    static RotateTransition rt1;
+    static RotateTransition rt2;
+
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/2up";
+    private static final String DB_USER = "root";
+    private static final String DB_PASSWORD = "Hadok3ns77!!";
 
     public static void main(String[] args) {
         launch(args);
     }
 
     @Override
-    public void start(Stage primaryStage) throws MalformedURLException {
-        // Placeholder image URLs
-        final URL url = new URL("https://via.placeholder.com/500x400.png");
-        image = new Image(url.toString());
-
+    public void start(Stage primaryStage) {
         score = new Label("Wins " + String.valueOf(winCount));
-        score.setStyle("-fx-text-fill: green; -fx-font-family: Arial; -fx-font-size: 20;");
+        score.setTextFill(Color.CYAN);
+        score.setStyle("-fx-font-family: Arial; -fx-font-size: 20;");
+
         score2 = new Label("Losses " + String.valueOf(loseCount));
-        score2.setStyle("-fx-text-fill: red; -fx-font-family: Arial; -fx-font-size: 20;");
-        nameField = new TextField("Enter Your Name");
+        score2.setTextFill(Color.RED);
+        score2.setStyle("-fx-font-family: Arial; -fx-font-size: 20;");
 
         button = new Button("Heads");
+        button.setOnAction(e -> flipCoin("heads"));
+
         button2 = new Button("Tails");
-        sbutton = new Button("Save");
+        button2.setOnAction(e -> flipCoin("tails"));
+
         ccbutton = new Button("Change Color");
 
-        button.setGraphic(new ImageView(new Image("https://via.placeholder.com/40x40.png")));
-        button2.setGraphic(new ImageView(new Image("https://via.placeholder.com/40x40.png")));
+        sbutton = new Button("Save");
 
-        button.setOnAction(new Act1());
-        button2.setOnAction(new Act2());
-        ccbutton.setOnAction(new Act4());
-        sbutton.setOnAction(new Act3());
+        usernameField = new TextField();
+        usernameField.setPromptText("Username");
 
-        MenuBar menuBar = new MenuBar();
-        Menu menu = new Menu("Open");
-        MenuItem fileItem = new MenuItem("File");
-        MenuItem leaderItem = new MenuItem("Leaderboard");
-        menu.getItems().addAll(fileItem, leaderItem);
-        menuBar.getMenus().add(menu);
+        passwordField = new PasswordField();
+        passwordField.setPromptText("Password");
+        playerName = new Label("");
+        playerName.setTextFill(Color.WHITE);
+        playerName.setStyle("-fx-font-family: Arial; -fx-font-size: 20;");
+        Button registerButton = new Button("Register");
+        registerButton.setOnAction(e -> registerUser());
+
+        Button loginButton = new Button("Login");
+        loginButton.setOnAction(e -> loginUser());
+
+        Button logoutButton = new Button("Logout");
+        logoutButton.setOnAction(e -> logoutUser());
 
         GridPane gridPane = new GridPane();
         gridPane.setPadding(new Insets(10));
         gridPane.setHgap(10);
         gridPane.setVgap(10);
         gridPane.setAlignment(Pos.CENTER);
-        gridPane.add(nameField, 0, 0);
-        gridPane.add(button, 0, 1);
-        gridPane.add(button2, 1, 1);
-        gridPane.add(ccbutton, 0, 2);
-        gridPane.add(sbutton, 1, 2);
-        gridPane.add(score, 0, 3);
-        gridPane.add(score2, 1, 3);
+        gridPane.add(usernameField, 0, 0);
+        gridPane.add(passwordField, 0, 1);
+        gridPane.add(registerButton, 0, 2);
+        gridPane.add(loginButton, 0, 3);
+        gridPane.add(button, 1, 0);
+        gridPane.add(button2, 2, 0);
+        gridPane.add(ccbutton, 1, 1);
+        gridPane.add(sbutton, 2, 1);
+        gridPane.add(score, 1, 2);
+        gridPane.add(score2, 2, 2);
+        gridPane.add(playerName, 0, 4, 3, 1);
+        gridPane.add(logoutButton, 3, 0);
 
-        ImageView imageView = new ImageView(image);
-        imageView.setFitWidth(500);
-        imageView.setFitHeight(400);
+        coin1 = new Circle(70);
+        coin2 = new Circle(70);
+        coin1.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\Rotate\\src\\main\\resources\\gold1.png"), 0, 0, 1, 1, true));
+        coin2.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\Rotate\\src\\main\\resources\\gold2.png"), 0, 0, 1, 1, true));
+        coin1.setStroke(Color.BLACK);
+        coin2.setStroke(Color.BLACK);
 
-        BorderPane borderPane = new BorderPane();
-        borderPane.setTop(menuBar);
-        borderPane.setCenter(imageView);
-        borderPane.setBottom(gridPane);
+        HBox coinBox = new HBox(10);
+        coinBox.getChildren().addAll(coin1, coin2);
+        coinBox.setAlignment(Pos.CENTER);
+
+        BorderPane root = new BorderPane();
+        root.setBackground(createBackground());
+        root.setCenter(gridPane);
+        root.setBottom(coinBox);
         BorderPane.setAlignment(gridPane, Pos.CENTER);
-
-        Scene scene = new Scene(borderPane, 500, 500);
+        BorderPane.setAlignment(coinBox, Pos.CENTER);
+        Scene scene = new Scene(root, 500, 500);
         primaryStage.setTitle("2UP Game");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
 
-    static class Act1 implements EventHandler<ActionEvent> {
-        @Override
-        public void handle(ActionEvent event) {
-            // Handle button action
-        }
+    private Background createBackground() {
+        Image backgroundImage = new Image("aussieflag.gif");
+        BackgroundImage backgroundImg = new BackgroundImage(backgroundImage, null, null, null,
+                new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, true));
+        return new Background(backgroundImg);
     }
 
-    static class Act2 implements EventHandler<ActionEvent> {
-        @Override
-        public void handle(ActionEvent event) {
-            // Handle button2 action
-        }
+    private void spinCoins() {
+        rt1 = new RotateTransition(Duration.seconds(2), coin1);
+        rt1.setByAngle(360 * 20);
+        rt1.setCycleCount(Animation.INDEFINITE);
+        rt1.setAutoReverse(true);
+        rt1.setAxis(Rotate.Y_AXIS);
+        rt1.play();
+
+        rt2 = new RotateTransition(Duration.seconds(2), coin2);
+        rt2.setByAngle(360 * 20);
+        rt2.setCycleCount(Animation.INDEFINITE);
+        rt2.setAutoReverse(true);
+        rt2.setAxis(Rotate.Y_AXIS);
+        rt2.play();
     }
 
-    static class Act3 implements EventHandler<ActionEvent> {
-        @Override
-        public void handle(ActionEvent event) {
-            // Handle sbutton action
-            saveData();
-        }
+    private void flipCoin(String choice) {
+        spinCoins();
+
+        PauseTransition delay = new PauseTransition(Duration.seconds(2));
+        delay.setOnFinished(e -> {
+            rt1.stop(); // Stop the rotation animation for coin1
+            rt2.stop(); // Stop the rotation animation for coin2
+            String result = getCoinResult();
+            String result2 = getCoinResult2();
+
+            if (result.equals("heads") && result2.equals("heads") && choice.equals("heads")) {
+                winCount++;
+                score.setText("Wins " + winCount);
+                coin1.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\Rotate\\src\\main\\resources\\gold1.png"), 0, 0, 1, 1, true));
+                coin2.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\Rotate\\src\\main\\resources\\gold1.png"), 0, 0, 1, 1, true));
+                showAlertWithAnimation("Flip Result", "You Win!", "winner.gif");
+            } else if (result.equals("tails") && result2.equals("tails") && choice.equals("tails")) {
+                winCount++;
+                score.setText("Wins " + winCount);
+                coin1.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\Rotate\\src\\main\\resources\\gold2.png"), 0, 0, 1, 1, true));
+                coin2.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\Rotate\\src\\main\\resources\\gold2.png"), 0, 0, 1, 1, true));
+                showAlertWithAnimation("Flip Result", "You Win!", "winner.gif");
+            } else if (result.equals("tails") && result2.equals("tails") && choice.equals("heads")) {
+                loseCount++;
+                score2.setText("Losses " + loseCount);
+                coin1.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\Rotate\\src\\main\\resources\\gold2.png"), 0, 0, 1, 1, true));
+                coin2.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\Rotate\\src\\main\\resources\\gold2.png"), 0, 0, 1, 1, true));
+                showAlertWithAnimation("Flip Result", "You Lose!", "loser.gif");
+            } else if (result.equals("heads") && result2.equals("heads") && choice.equals("tails")) {
+                loseCount++;
+                score2.setText("Losses " + loseCount);
+                coin1.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\Rotate\\src\\main\\resources\\gold1.png"), 0, 0, 1, 1, true));
+                coin2.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\Rotate\\src\\main\\resources\\gold1.png"), 0, 0, 1, 1, true));
+                showAlertWithAnimation("Flip Result", "You Lose!", "loser.gif");
+            } else if (result.equals("tails") && result2.equals("heads") && choice.equals("tails")) {
+                coin1.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\Rotate\\src\\main\\resources\\gold2.png"), 0, 0, 1, 1, true));
+                coin2.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\Rotate\\src\\main\\resources\\gold1.png"), 0, 0, 1, 1, true));
+                showAlert("Flip Again", "Flip again!");
+            } else if (result.equals("tails") && result2.equals("heads") && choice.equals("heads")) {
+                coin1.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\Rotate\\src\\main\\resources\\gold2.png"), 0, 0, 1, 1, true));
+                coin2.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\Rotate\\src\\main\\resources\\gold1.png"), 0, 0, 1, 1, true));
+                showAlert("Flip Again", "Flip again!");
+            } else {
+                coin1.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\Rotate\\src\\main\\resources\\gold1.png"), 0, 0, 1, 1, true));
+                coin2.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\Rotate\\src\\main\\resources\\gold2.png"), 0, 0, 1, 1, true));
+                showAlert("Flip Again", "Flip again!");
+            }
+            saveScoresToDatabase(); // Save scores to the database
+        });
+
+        delay.play();
     }
 
-    static class Act4 implements EventHandler<ActionEvent> {
-        @Override
-        public void handle(ActionEvent event) {
-            // Handle ccbutton action
-        }
-    }
+    private void saveScoresToDatabase() {
+        String username = usernameField.getText();
 
-    private static void connectToDatabase() {
-        String url = "jdbc:mysql://localhost:3306/mydatabase";
-        String username = "your-username";
-        String password = "your-password";
-
-        try {
-            connection = DriverManager.getConnection(url, username, password);
-            System.out.println("Connected to the database.");
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+            String query = "INSERT INTO scores (player, wins, losses, highscore) VALUES (?, ?, ?, ?)";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, username);
+            statement.setInt(2, winCount);
+            statement.setInt(3, loseCount);
+            statement.setInt(4, winCount - loseCount);
+            statement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Failed to connect to the database.");
-            e.printStackTrace();
+            showAlert("Database Error", "Failed to save scores to the database: " + e.getMessage());
         }
     }
 
-    private static void saveData() {
-        String name = nameField.getText();
-        String hashedName = hashString(name);
+    private void showAlertWithAnimation(String title, String message, String gifFileName) {
+        Alert alert = new Alert(Alert.AlertType.NONE);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
 
-        if (connection != null) {
-            try {
-                Statement statement = connection.createStatement();
-                String query = "INSERT INTO players (name, hashed_name) VALUES ('" + name + "', '" + hashedName + "')";
-                statement.executeUpdate(query);
-                System.out.println("Data saved successfully.");
-            } catch (SQLException e) {
-                System.out.println("Failed to save data.");
-                e.printStackTrace();
-            }
-        } else {
-            System.out.println("Connection to the database is not established.");
+        ImageView imageView = new ImageView(new Image(gifFileName));
+        VBox vbox = new VBox(imageView);
+        vbox.setAlignment(Pos.CENTER);
+
+        DialogPane dialogPane = new DialogPane();
+        dialogPane.setContent(vbox);
+
+        alert.setDialogPane(dialogPane);
+
+        PauseTransition delay = new PauseTransition(Duration.seconds(3));
+        delay.setOnFinished(e -> {
+            alert.setResult(ButtonType.CLOSE);
+            alert.close();
+        });
+
+        alert.show();
+        delay.play();
+    }
+
+    private String getCoinResult() {
+        return Math.random() < 0.5 ? "heads" : "tails";
+
+    }
+    private String getCoinResult2() {
+        return Math.random() < 0.5 ? "heads" : "tails";
+    }
+
+    private void registerUser() {
+        String username = usernameField.getText();
+        String password = passwordField.getText();
+
+        if (username.isEmpty() || password.isEmpty()) {
+            showAlert("Registration Error", "Please enter both username and password.");
+            return;
+        }
+
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+            String query = "INSERT INTO login (username, password) VALUES (?, ?)";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, username);
+            statement.setString(2, password);
+            statement.executeUpdate();
+
+            showAlert("Registration Successful", "User registered successfully!");
+        } catch (SQLException e) {
+            showAlert("Registration Error", "Failed to register user: " + e.getMessage());
         }
     }
 
-    private static String hashString(String input) {
-        try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] hashBytes = digest.digest(input.getBytes());
-            StringBuilder hexString = new StringBuilder();
+    private void loginUser() {
+        String username = usernameField.getText();
+        String password = passwordField.getText();
 
-            for (byte hashByte : hashBytes) {
-                String hex = Integer.toHexString(0xff & hashByte);
-                if (hex.length() == 1) hexString.append('0');
-                hexString.append(hex);
-            }
-
-            return hexString.toString();
-        } catch (NoSuchAlgorithmException e) {
-            System.out.println("Failed to hash the string.");
-            e.printStackTrace();
-            return "";
+        if (username.isEmpty() || password.isEmpty()) {
+            showAlert("Login Error", "Please enter both username and password.");
+            return;
         }
+
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+            String query = "SELECT * FROM login WHERE username = ? AND password = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, username);
+            statement.setString(2, password);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                String playerName = resultSet.getString("username");
+                OG.playerName.setText(playerName); // Set the player's name in the label
+                showAlert("Login Successful", "User logged in successfully!");
+            }
+        } catch (SQLException e) {
+            showAlert("Login Error", "Failed to login: " + e.getMessage());
+        }
+    }
+
+    private void logoutUser() {
+        usernameField.clear();
+        passwordField.clear();
+        OG.playerName.setText("");
+        showAlert("Logout Successful", "User logged out successfully!");
+    }
+
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.show();
+
     }
 }
