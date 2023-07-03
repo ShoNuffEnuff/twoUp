@@ -1,11 +1,13 @@
-package com.example.rotate;
+package TwoUp;
 
 import javafx.animation.Animation;
 import javafx.animation.PauseTransition;
 import javafx.animation.RotateTransition;
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -18,10 +20,14 @@ import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 public class OG extends Application {
 
+    public static boolean OGAppVisible;
     static int winCount = 0;
     static int loseCount = 0;
     static Label score;
@@ -37,17 +43,44 @@ public class OG extends Application {
     static Label playerName;
     static RotateTransition rt1;
     static RotateTransition rt2;
+    static boolean setOGAppVisible = false;
+    static Stage primaryStage;
+    static Scene scene1;
+    static Parent root1;
 
     private static final String DB_URL = "jdbc:mysql://localhost:3306/2up";
     private static final String DB_USER = "root";
     private static final String DB_PASSWORD = "Hadok3ns77!!";
+    private static String username;
+    private String password;
+    //private Stage primaryStage;
+    private Scene loginScene;
 
-    public static void main(String[] args) {
-        launch(args);
-    }
+    //public static void main(String[] args) {
+        //launch(args);
+
 
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) throws Exception {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("loginform.fxml"));
+        ogController controller = new ogController();
+        Parent root = loader.load();
+        loader.setController(controller);
+        Scene scene = new Scene(root, 600, 400);
+
+        this.primaryStage = primaryStage;
+
+        primaryStage.setTitle("2UP Game");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+
+        // Show the main app only if login is successful
+        //if (setOGAppVisible = Boolean.parseBoolean(("visible"))) {
+            //OGVisible();
+        }
+
+
+    public static Scene twoUp() {
         score = new Label("Wins " + String.valueOf(winCount));
         score.setTextFill(Color.CYAN);
         score.setStyle("-fx-font-family: Arial; -fx-font-size: 20;");
@@ -75,23 +108,23 @@ public class OG extends Application {
         playerName.setTextFill(Color.WHITE);
         playerName.setStyle("-fx-font-family: Arial; -fx-font-size: 20;");
         Button registerButton = new Button("Register");
-        registerButton.setOnAction(e -> registerUser());
+        //registerButton.setOnAction(e -> registerUser());
 
         Button loginButton = new Button("Login");
-        loginButton.setOnAction(e -> loginUser());
+        //loginButton.setOnAction(e -> loginUser());
 
         Button logoutButton = new Button("Logout");
-        logoutButton.setOnAction(e -> logoutUser());
+        //logoutButton.setOnAction(e -> logoutUser());
 
         GridPane gridPane = new GridPane();
         gridPane.setPadding(new Insets(10));
         gridPane.setHgap(10);
         gridPane.setVgap(10);
         gridPane.setAlignment(Pos.CENTER);
-        gridPane.add(usernameField, 0, 0);
-        gridPane.add(passwordField, 0, 1);
-        gridPane.add(registerButton, 0, 2);
-        gridPane.add(loginButton, 0, 3);
+        //gridPane.add(usernameField, 0, 0);
+        //gridPane.add(passwordField, 0, 1);
+        //gridPane.add(registerButton, 0, 2);
+        //gridPane.add(loginButton, 0, 3);
         gridPane.add(button, 1, 0);
         gridPane.add(button2, 2, 0);
         gridPane.add(ccbutton, 1, 1);
@@ -103,8 +136,8 @@ public class OG extends Application {
 
         coin1 = new Circle(70);
         coin2 = new Circle(70);
-        coin1.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\Rotate\\src\\main\\resources\\gold1.png"), 0, 0, 1, 1, true));
-        coin2.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\Rotate\\src\\main\\resources\\gold2.png"), 0, 0, 1, 1, true));
+        coin1.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\gold1.png"), 0, 0, 1, 1, true));
+        coin2.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\gold2.png"), 0, 0, 1, 1, true));
         coin1.setStroke(Color.BLACK);
         coin2.setStroke(Color.BLACK);
 
@@ -122,16 +155,25 @@ public class OG extends Application {
         primaryStage.setTitle("2UP Game");
         primaryStage.setScene(scene);
         primaryStage.show();
+
+        return scene;
     }
 
-    private Background createBackground() {
-        Image backgroundImage = new Image("img/aussieflag.gif");
+    //public void OGVisible() {
+        //primaryStage.setScene(scene1);
+        //primaryStage.setTitle("2UP Game");
+        //primaryStage.show();
+        //OGAppVisible = true;
+    //}
+
+    private static Background createBackground() {
+        Image backgroundImage = new Image("C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\aussieflag.gif");
         BackgroundImage backgroundImg = new BackgroundImage(backgroundImage, null, null, null,
                 new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, true));
         return new Background(backgroundImg);
     }
 
-    private void spinCoins() {
+    private static void spinCoins() {
         rt1 = new RotateTransition(Duration.seconds(2), coin1);
         rt1.setByAngle(360 * 20);
         rt1.setCycleCount(Animation.INDEFINITE);
@@ -147,7 +189,7 @@ public class OG extends Application {
         rt2.play();
     }
 
-    private void flipCoin(String choice) {
+    private static void flipCoin(String choice) {
         spinCoins();
 
         PauseTransition delay = new PauseTransition(Duration.seconds(2));
@@ -160,47 +202,58 @@ public class OG extends Application {
             if (result.equals("heads") && result2.equals("heads") && choice.equals("heads")) {
                 winCount++;
                 score.setText("Wins " + winCount);
-                coin1.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\Rotate\\src\\main\\resources\\gold1.png"), 0, 0, 1, 1, true));
-                coin2.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\Rotate\\src\\main\\resources\\gold1.png"), 0, 0, 1, 1, true));
-                showAlertWithAnimation("Flip Result", "You Win!", "img/winner.gif");
+                coin1.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\gold1.png"), 0, 0, 1, 1, true));
+                coin2.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\gold1.png"), 0, 0, 1, 1, true));
+                showAlertWithAnimation("Flip Result", "You Win!", "C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\winner.gif");
             } else if (result.equals("tails") && result2.equals("tails") && choice.equals("tails")) {
                 winCount++;
                 score.setText("Wins " + winCount);
-                coin1.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\Rotate\\src\\main\\resources\\gold2.png"), 0, 0, 1, 1, true));
-                coin2.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\Rotate\\src\\main\\resources\\gold2.png"), 0, 0, 1, 1, true));
-                showAlertWithAnimation("Flip Result", "You Win!", "img/winner.gif");
+                coin1.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\gold2.png"), 0, 0, 1, 1, true));
+                coin2.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\gold2.png"), 0, 0, 1, 1, true));
+                showAlertWithAnimation("Flip Result", "You Win!", "C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\winner.gif");
             } else if (result.equals("tails") && result2.equals("tails") && choice.equals("heads")) {
                 loseCount++;
                 score2.setText("Losses " + loseCount);
-                coin1.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\Rotate\\src\\main\\resources\\gold2.png"), 0, 0, 1, 1, true));
-                coin2.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\Rotate\\src\\main\\resources\\gold2.png"), 0, 0, 1, 1, true));
-                showAlertWithAnimation("Flip Result", "You Lose!", "img/loser.gif");
+                coin1.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\gold2.png"), 0, 0, 1, 1, true));
+                coin2.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\gold2.png"), 0, 0, 1, 1, true));
+                showAlertWithAnimation("Flip Result", "You Lose!", "C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\loser.gif");
             } else if (result.equals("heads") && result2.equals("heads") && choice.equals("tails")) {
                 loseCount++;
                 score2.setText("Losses " + loseCount);
-                coin1.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\Rotate\\src\\main\\resources\\gold1.png"), 0, 0, 1, 1, true));
-                coin2.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\Rotate\\src\\main\\resources\\gold1.png"), 0, 0, 1, 1, true));
-                showAlertWithAnimation("Flip Result", "You Lose!", "img/loser.gif");
+                coin1.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\gold1.png"), 0, 0, 1, 1, true));
+                coin2.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\gold1.png"), 0, 0, 1, 1, true));
+                showAlertWithAnimation("Flip Result", "You Lose!", "C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\loser.gif");
             } else if (result.equals("tails") && result2.equals("heads") && choice.equals("tails")) {
-                coin1.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\Rotate\\src\\main\\resources\\gold2.png"), 0, 0, 1, 1, true));
-                coin2.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\Rotate\\src\\main\\resources\\gold1.png"), 0, 0, 1, 1, true));
+                coin1.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\gold2.png"), 0, 0, 1, 1, true));
+                coin2.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\gold1.png"), 0, 0, 1, 1, true));
                 showAlert("Flip Again", "Flip again!");
             } else if (result.equals("tails") && result2.equals("heads") && choice.equals("heads")) {
-                coin1.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\Rotate\\src\\main\\resources\\gold2.png"), 0, 0, 1, 1, true));
-                coin2.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\Rotate\\src\\main\\resources\\gold1.png"), 0, 0, 1, 1, true));
+                coin1.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\gold2.png"), 0, 0, 1, 1, true));
+                coin2.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\gold1.png"), 0, 0, 1, 1, true));
                 showAlert("Flip Again", "Flip again!");
             } else {
-                coin1.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\Rotate\\src\\main\\resources\\gold1.png"), 0, 0, 1, 1, true));
-                coin2.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\Rotate\\src\\main\\resources\\gold2.png"), 0, 0, 1, 1, true));
+                coin1.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\gold1.png"), 0, 0, 1, 1, true));
+                coin2.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\gold2.png"), 0, 0, 1, 1, true));
                 showAlert("Flip Again", "Flip again!");
             }
-            saveScoresToDatabase(); // Save scores to the database
+            ogController controller = new ogController();
+            saveScoresToDatabase(controller);
         });
 
         delay.play();
     }
 
-    private void saveScoresToDatabase() {
+    private static void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.show();
+    }
+
+    private static void saveScoresToDatabase(ogController controller) {
+        //ogController controller1 = new ogController();
+        TextField usernameField = controller.getUsernameField();
         String username = usernameField.getText();
 
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
@@ -216,7 +269,7 @@ public class OG extends Application {
         }
     }
 
-    private void showAlertWithAnimation(String title, String message, String gifFileName) {
+    private static void showAlertWithAnimation(String title, String message, String gifFileName) {
         Alert alert = new Alert(Alert.AlertType.NONE);
         alert.setTitle(title);
         alert.setHeaderText(null);
@@ -241,75 +294,15 @@ public class OG extends Application {
         delay.play();
     }
 
-    private String getCoinResult() {
+    private static String getCoinResult() {
         return Math.random() < 0.5 ? "heads" : "tails";
 
     }
-    private String getCoinResult2() {
+    private static String getCoinResult2() {
         return Math.random() < 0.5 ? "heads" : "tails";
     }
 
-    private void registerUser() {
-        String username = usernameField.getText();
-        String password = passwordField.getText();
-
-        if (username.isEmpty() || password.isEmpty()) {
-            showAlert("Registration Error", "Please enter both username and password.");
-            return;
-        }
-
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-            String query = "INSERT INTO login (username, password) VALUES (?, ?)";
-            PreparedStatement statement = connection.prepareStatement(query);
-            statement.setString(1, username);
-            statement.setString(2, password);
-            statement.executeUpdate();
-
-            showAlert("Registration Successful", "User registered successfully!");
-        } catch (SQLException e) {
-            showAlert("Registration Error", "Failed to register user: " + e.getMessage());
-        }
-    }
-
-    private void loginUser() {
-        String username = usernameField.getText();
-        String password = passwordField.getText();
-
-        if (username.isEmpty() || password.isEmpty()) {
-            showAlert("Login Error", "Please enter both username and password.");
-            return;
-        }
-
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-            String query = "SELECT * FROM login WHERE username = ? AND password = ?";
-            PreparedStatement statement = connection.prepareStatement(query);
-            statement.setString(1, username);
-            statement.setString(2, password);
-            ResultSet resultSet = statement.executeQuery();
-
-            if (resultSet.next()) {
-                String playerName = resultSet.getString("username");
-                OG.playerName.setText(playerName); // Set the player's name in the label
-                showAlert("Login Successful", "User logged in successfully!");
-            }
-        } catch (SQLException e) {
-            showAlert("Login Error", "Failed to login: " + e.getMessage());
-        }
-    }
-
-    private void logoutUser() {
-        usernameField.clear();
-        passwordField.clear();
-        OG.playerName.setText("");
-        showAlert("Logout Successful", "User logged out successfully!");
-    }
-
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.show();
-
+    public static void main(String[] args) {
+        launch(args);
     }
 }
