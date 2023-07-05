@@ -1,20 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.layout.BorderPane?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="TwoUp.LeaderBoard">
-   <center>
-      <TableView fx:id="tableView" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-        <columns>
-          <TableColumn fx:id="playerNameCol" prefWidth="299.20001220703125" text="C1" />
-          <TableColumn fx:id="scoreCol" minWidth="0.0" prefWidth="300.0" text="C2">
-               <graphic>
-                  <Button fx:id="returnButton" mnemonicParsing="false" onAction="#returnButtonClicked" prefHeight="36.0" prefWidth="67.0" text="Return" />
-               </graphic></TableColumn>
-        </columns>
-      </TableView>
-   </center>
-</BorderPane>
+<TableView fx:id="tableView" prefHeight="400.0" prefWidth="590.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+   <columns>
+      <TableColumn fx:id="playerNameCol" minWidth="-1.0" prefWidth="299.20001220703125" text="C1" />
+      <TableColumn fx:id="scoreCol" minWidth="-1.0" prefWidth="299.20001220703125" text="C2" />
+   </columns>
+</TableView>

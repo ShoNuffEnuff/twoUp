@@ -4,40 +4,37 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-import static TwoUp.OG.primaryStage;
-import static TwoUp.OG.twoUp;
-
 public class LeaderBoard {
 
     @FXML
     private TableView<Score> tableView;
-    @FXML
-    private Button returnButton;
 
     public LeaderBoard() {
         initializeTableView();
 
         fetchTopScoresFromDatabase(); // Fetch top scores from MySQL table and populate the TableView
-
+        Stage leaderStage = new Stage();
         Scene scene = new Scene(tableView, 600, 400);
         String css = this.getClass().getResource("leaderboard.css").toExternalForm();
         scene.getStylesheets().add(css);
-        primaryStage.setScene(scene);
-        primaryStage.setTitle("Scores");
-        primaryStage.show();
+        tableView.getStyleClass().add("transparent-table-view");
+
+
+        leaderStage.setScene(scene);
+        leaderStage.setTitle("Scores");
+        leaderStage.show();
     }
 
     private void initializeTableView() {
@@ -49,6 +46,8 @@ public class LeaderBoard {
 
         tableView = new TableView<>();
         tableView.getColumns().addAll(playerColumn, scoreColumn);
+
+        tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     }
 
     private void fetchTopScoresFromDatabase() {
@@ -85,10 +84,7 @@ public class LeaderBoard {
         }
     }
 
-    public void returnButtonClicked(ActionEvent actionEvent) {
-        returnButton.setDisable(true);
-        twoUp();
-    }
+
 
     public class Score {
         private final SimpleStringProperty player;

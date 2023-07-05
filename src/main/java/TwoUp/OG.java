@@ -16,6 +16,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Font;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -30,25 +31,27 @@ import static TwoUp.LoginData.username;
 public class OG extends Application {
 
 
-
     static int winCount = 0;
     static int loseCount = 0;
+    static int currentCount = 0;
     static Label score;
     static Label score2;
+    static Label score3;
     static Circle coin1;
     static Circle coin2;
     static Button button;
     static Button button2;
     static Button sbutton;
     static Button ccbutton;
+    static Button scbutton;
     static TextField usernameField;
     static PasswordField passwordField;
     static Label playerName;
     static RotateTransition rt1;
     static RotateTransition rt2;
-    //static boolean setOGAppVisible = false;
     static Stage primaryStage;
     static Button lbutton;
+    static Button logoutButton;
 
     private static final String DB_URL = "jdbc:mysql://localhost:3306/2up";
     private static final String DB_USER = "root";
@@ -56,7 +59,6 @@ public class OG extends Application {
     private String password;
     //private Stage primaryStage;
     private Scene loginScene;
-
 
 
     @Override
@@ -73,64 +75,96 @@ public class OG extends Application {
         primaryStage.setTitle("2UP Game");
         primaryStage.setScene(scene);
         primaryStage.show();
-
-
     }
-
 
 
     public static Scene twoUp() {
         score = new Label("Wins " + String.valueOf(winCount));
         score.setTextFill(Color.CYAN);
-        score.setStyle("-fx-font-family: Arial; -fx-font-size: 20;");
+        score.setFont(Font.font("Arial", 18));
+
+        //score.setStyle("-fx-font-family: Arial; -fx-font-size: 20;");
 
         score2 = new Label("Losses " + String.valueOf(loseCount));
         score2.setTextFill(Color.RED);
-        score2.setStyle("-fx-font-family: Arial; -fx-font-size: 20;");
+        score2.setFont(Font.font("Arial", 18));
+
+
+        //score2.setStyle("-fx-font-family: Arial; -fx-font-size: 20;");
+        currentCount = winCount - loseCount;
+        score3 = new Label("Score " +(currentCount));
+        score3.setTextFill(Color.LIMEGREEN);
+        score3.setFont(Font.font("Arial", 18));
 
         button = new Button("Heads");
         button.setOnAction(e -> flipCoin("heads"));
 
         button2 = new Button("Tails");
         button2.setOnAction(e -> flipCoin("tails"));
+        logoutButton = new Button("Logout");
 
         ccbutton = new Button("Change Color");
         lbutton = new Button("Leaderboard");
         lbutton.setOnAction(e -> leaderBoard());
+        scbutton = new Button("Change Button/Text Size");
+        double[] textSizeValues = {18, 24, 30};
+        final int[] currentSizeIndex = {0};
+        scbutton.setOnAction(event -> {
+                    currentSizeIndex[0] = (currentSizeIndex[0] + 1) %
+                            textSizeValues.length;
+                    double textSize = textSizeValues[currentSizeIndex[0]];
+
+                    button.setFont(Font.font("Arial",textSize));
+                    button2.setFont(Font.font("Arial",textSize));
+                    lbutton.setFont(Font.font(textSize));
+                    logoutButton.setFont(Font.font(textSize));
+                    scbutton.setFont(Font.font(textSize));
+                    //playerName.setFont(Font.font(textSize));
+                    score.setFont(Font.font("Arial",textSize));
+                    score2.setFont(Font.font("Arial",textSize));
+                    score3.setFont(Font.font("Arial",textSize));
+                });
+
+
 
         sbutton = new Button("Save");
 
         passwordField = new PasswordField();
         passwordField.setPromptText("Password");
         playerName = new Label("");
+        playerName.setFont(new Font("Arial", 40));
         playerName.setTextFill(Color.WHITE);
-        playerName.setStyle("-fx-font-family: Arial; -fx-font-size: 20;");
+        //playerName.setStyle("-fx-font-family: Arial; -fx-font-size: 20;");
         Button registerButton = new Button("Register");
         //registerButton.setOnAction(e -> registerUser());
 
         Button loginButton = new Button("Login");
         //loginButton.setOnAction(e -> loginUser());
 
-        Button logoutButton = new Button("Logout");
+        //Button logoutButton = new Button("Logout");
         //logoutButton.setOnAction(e -> logoutUser());
 
         GridPane gridPane = new GridPane();
+        GridPane scorePane = new GridPane();
+        GridPane buttonPane = new GridPane();
         gridPane.setPadding(new Insets(10));
-        gridPane.setHgap(10);
-        gridPane.setVgap(10);
-        gridPane.setAlignment(Pos.CENTER);
+        gridPane.setHgap(0);
+        gridPane.setVgap(0);
+        gridPane.setAlignment(Pos.CENTER_LEFT);
+        buttonPane.setHgap(0);
         //gridPane.add(usernameField, 0, 0);
         //gridPane.add(passwordField, 0, 1);
-        //gridPane.add(registerButton, 0, 2);
+        buttonPane.add(scbutton, 0, 6);
         //gridPane.add(loginButton, 0, 3);
-        gridPane.add(button, 1, 0);
-        gridPane.add(button2, 2, 0);
-        gridPane.add(lbutton, 1, 1);
-        gridPane.add(sbutton, 2, 1);
-        gridPane.add(score, 1, 2);
-        gridPane.add(score2, 2, 2);
-        gridPane.add(playerName, 0, 4, 3, 1);
-        gridPane.add(logoutButton, 3, 0);
+        gridPane.add(button, 0, 6);
+        gridPane.add(button2, 1, 6);
+        buttonPane.add(lbutton, 0, 0);
+        //gridPane.add(sbutton, 2, 1);
+        scorePane.add(score, 1, 2);
+        scorePane.add(score2, 2, 2);
+        scorePane.add(playerName, 0, 1, 3, 1);
+        scorePane.add(score3,3,2 );
+        buttonPane.add(logoutButton, 0, 1);
 
         coin1 = new Circle(70);
         coin2 = new Circle(70);
@@ -141,15 +175,35 @@ public class OG extends Application {
 
         HBox coinBox = new HBox(10);
         coinBox.getChildren().addAll(coin1, coin2);
-        coinBox.setAlignment(Pos.CENTER);
+        coinBox.setAlignment(Pos.BOTTOM_CENTER);
+        VBox scoreContent = new VBox(20);
+        scoreContent.getChildren().addAll(playerName, score, score2, score3);
+        scoreContent.setAlignment(Pos.CENTER);
+
+        Region scoreBackground = new Region();
+        scoreBackground.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
+        scoreBackground.setPrefSize(300, 200);
+
+        StackPane scoreBox = new StackPane();
+        scoreBox.getChildren().addAll(scoreBackground, scoreContent);
+        HBox buttonBox = new HBox(10);
+        buttonBox.getChildren().addAll(button, button2);
+        buttonBox.setAlignment(Pos.CENTER);
+        VBox buttonCoinBox = new VBox(10);
+        buttonCoinBox.getChildren().addAll(buttonBox, coinBox);
+        buttonCoinBox.setAlignment(Pos.CENTER);
 
         BorderPane root = new BorderPane();
         root.setBackground(createBackground());
         root.setCenter(gridPane);
-        root.setBottom(coinBox);
+        root.setLeft(buttonPane);
+        root.setBottom(buttonCoinBox);
+        root.setRight(scoreBox); // Add the scoreBox to the right side of the BorderPane
         BorderPane.setAlignment(gridPane, Pos.CENTER);
-        BorderPane.setAlignment(coinBox, Pos.CENTER);
-        Scene scene = new Scene(root, 900, 500);
+        BorderPane.setAlignment(buttonPane, Pos.CENTER);
+        BorderPane.setAlignment(coinBox, Pos.BOTTOM_CENTER);
+        BorderPane.setAlignment(scoreBox, Pos.CENTER);
+        Scene scene = new Scene(root, 1000, 500);
         primaryStage.setTitle("2UP Game");
         primaryStage.setScene(scene);
         //primaryStage.setFullScreen(true);
@@ -160,14 +214,10 @@ public class OG extends Application {
 
     private static void leaderBoard() {
         new LeaderBoard();
-
-
-
-
-
-
-
     }
+
+
+
 
 
     private static Background createBackground() {
