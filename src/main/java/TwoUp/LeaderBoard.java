@@ -9,7 +9,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -27,10 +30,16 @@ public class LeaderBoard {
         fetchTopScoresFromDatabase(); // Fetch top scores from MySQL table and populate the TableView
         Stage leaderStage = new Stage();
         Scene scene = new Scene(tableView, 600, 400);
+        leaderStage.initStyle(StageStyle.TRANSPARENT);
+        scene.setFill(Color.TRANSPARENT);
         String css = this.getClass().getResource("leaderboard.css").toExternalForm();
         scene.getStylesheets().add(css);
         tableView.getStyleClass().add("transparent-table-view");
-
+        scene.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ESCAPE) {
+                leaderStage.close();
+            }
+        });
 
         leaderStage.setScene(scene);
         leaderStage.setTitle("Scores");
@@ -38,7 +47,7 @@ public class LeaderBoard {
     }
 
     private void initializeTableView() {
-        TableColumn<Score, String> playerColumn = new TableColumn<>("Player");
+        TableColumn<Score, String> playerColumn = new TableColumn<>("Player   -    " + "Press Escape to close.");
         playerColumn.setCellValueFactory(new PropertyValueFactory<>("player"));
 
         TableColumn<Score, Integer> scoreColumn = new TableColumn<>("High Score");

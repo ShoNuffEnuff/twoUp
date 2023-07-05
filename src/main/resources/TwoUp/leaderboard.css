@@ -13,7 +13,7 @@
     -fx-cell-size: 20;
     -fx-alignment: center;
     -fx-background-color: rgba(0, 0, 0, 0.5);
-    -fx-border-color: #FFD700;
+    -fx-border-color: rgba(0, 0, 0, 0.5);
     -fx-text-fill: lightgray;
     -fx-font-weight: 900;
     -fx-alignment: CENTER;
@@ -22,4 +22,8 @@
 .transparent-table-view .table-row-cell:selected {
     -fx-background-color: whitesmoke;
     -fx-text-background-color:  #6622CC;
+}
+.root {
+    -fx-background-color: rgba(0, 0, 0, 0.5);
+
 }
