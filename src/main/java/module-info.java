@@ -11,6 +11,7 @@ module com.example.rotate {
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
     requires java.sql;
+    requires annotations;
 
     opens TwoUp to javafx.fxml;
     exports TwoUp;

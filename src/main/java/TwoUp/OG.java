@@ -25,9 +25,12 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+import static TwoUp.LoginData.username;
+
 public class OG extends Application {
 
-    public static boolean OGAppVisible;
+
+
     static int winCount = 0;
     static int loseCount = 0;
     static Label score;
@@ -43,21 +46,17 @@ public class OG extends Application {
     static Label playerName;
     static RotateTransition rt1;
     static RotateTransition rt2;
-    static boolean setOGAppVisible = false;
+    //static boolean setOGAppVisible = false;
     static Stage primaryStage;
-    static Scene scene1;
-    static Parent root1;
+    static Button lbutton;
 
     private static final String DB_URL = "jdbc:mysql://localhost:3306/2up";
     private static final String DB_USER = "root";
     private static final String DB_PASSWORD = "Hadok3ns77!!";
-    private static String username;
     private String password;
     //private Stage primaryStage;
     private Scene loginScene;
 
-    //public static void main(String[] args) {
-        //launch(args);
 
 
     @Override
@@ -68,16 +67,16 @@ public class OG extends Application {
         loader.setController(controller);
         Scene scene = new Scene(root, 600, 400);
 
+
         this.primaryStage = primaryStage;
 
         primaryStage.setTitle("2UP Game");
         primaryStage.setScene(scene);
         primaryStage.show();
 
-        // Show the main app only if login is successful
-        //if (setOGAppVisible = Boolean.parseBoolean(("visible"))) {
-            //OGVisible();
-        }
+
+    }
+
 
 
     public static Scene twoUp() {
@@ -96,11 +95,10 @@ public class OG extends Application {
         button2.setOnAction(e -> flipCoin("tails"));
 
         ccbutton = new Button("Change Color");
+        lbutton = new Button("Leaderboard");
+        lbutton.setOnAction(e -> leaderBoard());
 
         sbutton = new Button("Save");
-
-        usernameField = new TextField();
-        usernameField.setPromptText("Username");
 
         passwordField = new PasswordField();
         passwordField.setPromptText("Password");
@@ -127,7 +125,7 @@ public class OG extends Application {
         //gridPane.add(loginButton, 0, 3);
         gridPane.add(button, 1, 0);
         gridPane.add(button2, 2, 0);
-        gridPane.add(ccbutton, 1, 1);
+        gridPane.add(lbutton, 1, 1);
         gridPane.add(sbutton, 2, 1);
         gridPane.add(score, 1, 2);
         gridPane.add(score2, 2, 2);
@@ -151,20 +149,26 @@ public class OG extends Application {
         root.setBottom(coinBox);
         BorderPane.setAlignment(gridPane, Pos.CENTER);
         BorderPane.setAlignment(coinBox, Pos.CENTER);
-        Scene scene = new Scene(root, 500, 500);
+        Scene scene = new Scene(root, 900, 500);
         primaryStage.setTitle("2UP Game");
         primaryStage.setScene(scene);
+        //primaryStage.setFullScreen(true);
         primaryStage.show();
 
         return scene;
     }
 
-    //public void OGVisible() {
-        //primaryStage.setScene(scene1);
-        //primaryStage.setTitle("2UP Game");
-        //primaryStage.show();
-        //OGAppVisible = true;
-    //}
+    private static void leaderBoard() {
+        new LeaderBoard();
+
+
+
+
+
+
+
+    }
+
 
     private static Background createBackground() {
         Image backgroundImage = new Image("C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\aussieflag.gif");
@@ -236,8 +240,9 @@ public class OG extends Application {
                 coin2.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\gold2.png"), 0, 0, 1, 1, true));
                 showAlert("Flip Again", "Flip again!");
             }
-            ogController controller = new ogController();
-            saveScoresToDatabase(controller);
+            //ogController controller = new ogController();
+            saveScoresToDatabase();
+            System.out.println("Username: " + username);
         });
 
         delay.play();
@@ -251,10 +256,9 @@ public class OG extends Application {
         alert.show();
     }
 
-    private static void saveScoresToDatabase(ogController controller) {
-        //ogController controller1 = new ogController();
-        TextField usernameField = controller.getUsernameField();
-        String username = usernameField.getText();
+    private static String saveScoresToDatabase() {
+        //ogController controller = new ogController();
+        String username = LoginData.getUsername();
 
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
             String query = "INSERT INTO scores (player, wins, losses, highscore) VALUES (?, ?, ?, ?)";
@@ -267,6 +271,7 @@ public class OG extends Application {
         } catch (SQLException e) {
             showAlert("Database Error", "Failed to save scores to the database: " + e.getMessage());
         }
+        return username;
     }
 
     private static void showAlertWithAnimation(String title, String message, String gifFileName) {

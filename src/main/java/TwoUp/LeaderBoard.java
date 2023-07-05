@@ -1,67 +1,120 @@
 package TwoUp;
 
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 
-import java.net.URL;
-import java.sql.*;
-import java.util.ResourceBundle;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 
-public class LeaderBoard implements Initializable {
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/mydatabase";
-    private static final String DB_USERNAME = "your-username";
-    private static final String DB_PASSWORD = "your-password";
+import static TwoUp.OG.primaryStage;
+import static TwoUp.OG.twoUp;
+
+public class LeaderBoard {
 
     @FXML
     private TableView<Score> tableView;
     @FXML
-    private TableColumn<Score, String> playerNameCol;
-    @FXML
-    private TableColumn<Score, Integer> scoreCol;
+    private Button returnButton;
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        loadDataFromDatabase();
+    public LeaderBoard() {
+        initializeTableView();
+
+        fetchTopScoresFromDatabase(); // Fetch top scores from MySQL table and populate the TableView
+
+        Scene scene = new Scene(tableView, 600, 400);
+        String css = this.getClass().getResource("leaderboard.css").toExternalForm();
+        scene.getStylesheets().add(css);
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("Scores");
+        primaryStage.show();
     }
 
-    private void loadDataFromDatabase() {
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery("SELECT player_name, score FROM scores ORDER BY score DESC LIMIT 10")) {
+    private void initializeTableView() {
+        TableColumn<Score, String> playerColumn = new TableColumn<>("Player");
+        playerColumn.setCellValueFactory(new PropertyValueFactory<>("player"));
 
-            ObservableList<Score> scoreList = FXCollections.observableArrayList();
-            while (rs.next()) {
-                String playerName = rs.getString("player_name");
-                int score = rs.getInt("score");
-                Score scoreEntry = new Score(playerName, score);
-                scoreList.add(scoreEntry);
+        TableColumn<Score, Integer> scoreColumn = new TableColumn<>("High Score");
+        scoreColumn.setCellValueFactory(new PropertyValueFactory<>("score"));
+
+        tableView = new TableView<>();
+        tableView.getColumns().addAll(playerColumn, scoreColumn);
+    }
+
+    private void fetchTopScoresFromDatabase() {
+        try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/2up", "root", "Hadok3ns77!!");
+             Statement statement = connection.createStatement()) {
+
+            // Execute SQL query to fetch top scores
+            String query = "SELECT player, highscore FROM scores ORDER BY highscore DESC LIMIT 10";
+            ResultSet resultSet = statement.executeQuery(query);
+
+            // Create an ObservableList to store Score objects
+            ObservableList<Score> scores = FXCollections.observableArrayList();
+
+            // Iterate over the result set and create Score objects
+            while (resultSet.next()) {
+                String player = resultSet.getString("player");
+                int highScore = resultSet.getInt("highscore");
+                Score score = new Score(player, highScore);
+
+                // Calling the getScore method
+                //int retrievedScore = score.getScore();
+
+                // You can now use the retrievedScore variable as needed
+                //System.out.println("Retrieved score: " + retrievedScore);
+
+                scores.add(score);
             }
 
-            tableView.setItems(scoreList);
-        } catch (SQLException e) {
+            // Bind the ObservableList to the TableView
+            tableView.setItems(scores);
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private static class Score {
-        private final String playerName;
-        private final int score;
+    public void returnButtonClicked(ActionEvent actionEvent) {
+        returnButton.setDisable(true);
+        twoUp();
+    }
 
-        public Score(String playerName, int score) {
-            this.playerName = playerName;
-            this.score = score;
+    public class Score {
+        private final SimpleStringProperty player;
+        private final SimpleIntegerProperty score;
+
+        public Score(String player, int score) {
+            this.player = new SimpleStringProperty(player);
+            this.score = new SimpleIntegerProperty(score);
         }
 
-        public String getPlayerName() {
-            return playerName;
+        public String getPlayer() {
+            return player.get();
+        }
+
+        public void setPlayer(String player) {
+            this.player.set(player);
         }
 
         public int getScore() {
-            return score;
+            return score.get();
+        }
+
+        public void setScore(int score) {
+            this.score.set(score);
+        }
+
         }
     }
-}
+

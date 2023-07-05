@@ -23,7 +23,7 @@ public class ogController {
 
     @FXML
     private PasswordField passwordField;
-
+    private String storedUsername; // Variable to store the username
     public ogController() {
 
     }
@@ -32,10 +32,12 @@ public class ogController {
         this.loginService = loginService;
     }
 
-    public TextField getUsernameField() {
-        return usernameField;
-    }
+    public void savedLoginData(){
+        String username = usernameField.getText();
 
+        LoginData data = LoginData.getInstance();
+        data.setUsername(username);
+    }
     @FXML
     private void handleRegisterButtonClicked(ActionEvent event) {
         handleRegisterButton.setDisable(true); // Disable the register button
@@ -74,10 +76,13 @@ public class ogController {
         boolean loginSuccess = loginService.loginUser(username, password);
 
         if (loginSuccess) {
+            LoginData.getInstance();
+            LoginData.setUsername(username);
             twoUp();
-            OG.playerName.setText(username); // Set the player's name in the label
-            //setOGAppVisible(true);
-            //OGVisible();
+            OG.playerName.setText(username);
+
+
+
         } else {
             showErrorAlert("Login Failed", "Invalid username or password.");
         }
@@ -85,8 +90,6 @@ public class ogController {
         handleLoginButton.setDisable(false); // Enable the login button
     }
 
-    //private void setOGAppVisible(boolean b) {
-    //}
 
     private void showSuccessAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -104,5 +107,5 @@ public class ogController {
         alert.showAndWait();
     }
 
-    //static Parent o = (Parent) OGVisible();
+
 }
