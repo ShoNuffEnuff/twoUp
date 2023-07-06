@@ -295,7 +295,8 @@ public class OG extends Application {
         String[] imagePaths = {
                 "C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\aussieflag.gif",
                 "C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\aussieflagGS.gif",
-                "C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\ausflag.jpg"
+                "C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\ausflag.jpg",
+                "C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\ausflagGS.jpg"
         };
 
         // Increment the index for the next image (cycling back to 0 if necessary)
@@ -346,6 +347,7 @@ public class OG extends Application {
             rt2.stop(); // Stop the rotation animation for coin2
             String result = getCoinResult();
             String result2 = getCoinResult2();
+
 
             if (result.equals("heads") && result2.equals("heads") && choice.equals("heads")) {
                 winCount++;
