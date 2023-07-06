@@ -52,13 +52,15 @@ public class OG extends Application {
     static Stage primaryStage;
     static Button lbutton;
     static Button logoutButton;
+    static Label cclabel;
+    static Button getCcbutton;
 
     private static final String DB_URL = "jdbc:mysql://localhost:3306/2up";
     private static final String DB_USER = "root";
     private static final String DB_PASSWORD = "Hadok3ns77!!";
     private String password;
     //private Stage primaryStage;
-    private Scene loginScene;
+    private static Scene loginScene;
 
 
     @Override
@@ -67,16 +69,29 @@ public class OG extends Application {
         ogController controller = new ogController();
         Parent root = loader.load();
         loader.setController(controller);
-        Scene scene = new Scene(root, 600, 400);
+        Scene loginScene = new Scene(root, 600, 400);
 
+        // Create an instance of OG class
+        OG ogInstance = new OG();
 
-        this.primaryStage = primaryStage;
+        // Set the loginScene as the loginScene property in the ogInstance
+        ogInstance.loginScene = loginScene;
 
+        // Set the primaryStage
+        ogInstance.primaryStage = primaryStage;
+
+        // Show the loginScene
         primaryStage.setTitle("2UP Game");
-        primaryStage.setScene(scene);
+        primaryStage.setScene(loginScene);
         primaryStage.show();
     }
 
+    public static void logoutUser() {
+        // Close the twoUp scene and open the login scene
+        primaryStage.close();
+        primaryStage.setScene(loginScene);
+        primaryStage.show();
+    }
 
     public static Scene twoUp() {
         score = new Label("Wins " + String.valueOf(winCount));
@@ -102,8 +117,41 @@ public class OG extends Application {
         button2 = new Button("Tails");
         button2.setOnAction(e -> flipCoin("tails"));
         logoutButton = new Button("Logout");
+        logoutButton.setOnAction(event -> {
+            logoutUser();
+                });
 
-        ccbutton = new Button("Change Color");
+        cclabel = new Label("Pick a colour. Changes will apply when you close this window.");
+        ccbutton = new Button("Change Colour");
+        ccbutton.setOnAction(event -> {
+            Stage colorChooserStage = new Stage();
+            ColorPicker colorPicker = new ColorPicker();
+            Button applyButton = new Button("Apply");
+
+            applyButton.setOnAction(e -> {
+                Color selectedColor = colorPicker.getValue();
+
+                button.setTextFill(selectedColor);
+                button2.setTextFill(selectedColor);
+                score.setTextFill(selectedColor);
+                score2.setTextFill(selectedColor);
+                score3.setTextFill(selectedColor);
+                playerName.setTextFill(selectedColor);
+
+                colorChooserStage.close(); // Close the color chooser stage after applying the changes
+            });
+
+            VBox colorChooserLayout = new VBox(10);
+            colorChooserLayout.getChildren().addAll(colorPicker, applyButton);
+            colorChooserLayout.setAlignment(Pos.CENTER);
+            colorChooserLayout.setPadding(new Insets(10));
+
+            Scene colorChooserScene = new Scene(colorChooserLayout);
+
+            colorChooserStage.setTitle("Color Chooser");
+            colorChooserStage.setScene(colorChooserScene);
+            colorChooserStage.show();
+        });
         lbutton = new Button("Leaderboard");
         lbutton.setOnAction(e -> leaderBoard());
         scbutton = new Button("Change Button/Text Size");
@@ -147,24 +195,38 @@ public class OG extends Application {
         GridPane gridPane = new GridPane();
         GridPane scorePane = new GridPane();
         GridPane buttonPane = new GridPane();
+        Button resetButton = new Button("Reset Colours");
+        resetButton.setOnAction(event -> {
+            // Reset the colors to their original values
+            button.setTextFill(Color.BLACK);
+            button2.setTextFill(Color.BLACK);
+            score.setTextFill(Color.CYAN);
+            score2.setTextFill(Color.RED);
+            score3.setTextFill(Color.LIMEGREEN);
+            playerName.setTextFill(Color.WHITE);
+        });
+
+        buttonPane.add(resetButton, 1, 0);
+
         gridPane.setPadding(new Insets(10));
         gridPane.setHgap(0);
         gridPane.setVgap(0);
         gridPane.setAlignment(Pos.CENTER_LEFT);
         buttonPane.setHgap(0);
+        buttonPane.setVgap(5);
         //gridPane.add(usernameField, 0, 0);
-        //gridPane.add(passwordField, 0, 1);
+        buttonPane.add(ccbutton, 1, 6);
         buttonPane.add(scbutton, 0, 6);
         //gridPane.add(loginButton, 0, 3);
         gridPane.add(button, 0, 6);
         gridPane.add(button2, 1, 6);
-        buttonPane.add(lbutton, 0, 0);
+        buttonPane.add(lbutton, 2, 6);
         //gridPane.add(sbutton, 2, 1);
         scorePane.add(score, 1, 2);
         scorePane.add(score2, 2, 2);
         scorePane.add(playerName, 0, 1, 3, 1);
         scorePane.add(score3,3,2 );
-        buttonPane.add(logoutButton, 0, 1);
+        buttonPane.add(logoutButton, 0, 7);
 
         coin1 = new Circle(70);
         coin2 = new Circle(70);
