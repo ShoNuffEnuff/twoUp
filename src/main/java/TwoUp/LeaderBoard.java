@@ -10,7 +10,9 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -20,6 +22,8 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 
 public class LeaderBoard {
+    private final int INITIAL_TEXT_SIZE = 12;
+    private int textSize = INITIAL_TEXT_SIZE;
 
     @FXML
     private TableView<Score> tableView;
@@ -35,6 +39,7 @@ public class LeaderBoard {
         String css = this.getClass().getResource("leaderboard.css").toExternalForm();
         scene.getStylesheets().add(css);
         tableView.getStyleClass().add("transparent-table-view");
+        scene.addEventHandler(KeyEvent.KEY_PRESSED, this::handleKeyPressed);
         scene.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ESCAPE) {
                 leaderStage.close();
@@ -49,14 +54,15 @@ public class LeaderBoard {
     private void initializeTableView() {
         TableColumn<Score, String> playerColumn = new TableColumn<>("Player   -    " + "Press Escape to close.");
         playerColumn.setCellValueFactory(new PropertyValueFactory<>("player"));
-
-        TableColumn<Score, Integer> scoreColumn = new TableColumn<>("High Score");
+        playerColumn.setSortable(false);
+        TableColumn<Score, Integer> scoreColumn = new TableColumn<>("High Score   -    " + "pgUp/pgDn to change text size.");
         scoreColumn.setCellValueFactory(new PropertyValueFactory<>("score"));
-
+        scoreColumn.setSortable(false);
         tableView = new TableView<>();
         tableView.getColumns().addAll(playerColumn, scoreColumn);
 
         tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        setTableViewTextSize(textSize);
     }
 
     private void fetchTopScoresFromDatabase() {
@@ -92,7 +98,30 @@ public class LeaderBoard {
             e.printStackTrace();
         }
     }
+    private void handleKeyPressed(KeyEvent event) {
+        if (event.getCode() == KeyCode.PAGE_UP) {
+            increaseTextSize();
+        } else if (event.getCode() == KeyCode.PAGE_DOWN) {
+            decreaseTextSize();
+        }
+    }
 
+    private void increaseTextSize() {
+        textSize += 2;
+        setTableViewTextSize(textSize);
+    }
+
+    private void decreaseTextSize() {
+        if (textSize > INITIAL_TEXT_SIZE) {
+            textSize -= 2;
+            setTableViewTextSize(textSize);
+        }
+    }
+
+    private void setTableViewTextSize(int size) {
+        String fontName = Font.getDefault().getFamily();
+        tableView.setStyle("-fx-font-family: " + fontName + "; -fx-font-size: " + size + "px;");
+    }
 
 
     public class Score {

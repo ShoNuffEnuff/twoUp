@@ -1,6 +1,6 @@
 .transparent-table-view .column-header,
 .transparent-table-view .column-header-background .filler {
-    -fx-background-color:  #0000FF;
+    -fx-background-color: #0000FF;
 }
 
 .transparent-table-view .column-header .label {
@@ -10,20 +10,19 @@
 }
 
 .transparent-table-view .cell {
-    -fx-cell-size: 20;
     -fx-alignment: center;
     -fx-background-color: rgba(0, 0, 0, 0.5);
     -fx-border-color: rgba(0, 0, 0, 0.5);
     -fx-text-fill: lightgray;
     -fx-font-weight: 900;
-    -fx-alignment: CENTER;
+    -fx-padding: 5px;
 }
 
 .transparent-table-view .table-row-cell:selected {
     -fx-background-color: whitesmoke;
-    -fx-text-background-color:  #6622CC;
+    -fx-text-background-color: #6622CC;
 }
+
 .root {
     -fx-background-color: rgba(0, 0, 0, 0.5);
-
 }

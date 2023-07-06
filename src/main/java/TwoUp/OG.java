@@ -81,20 +81,20 @@ public class OG extends Application {
     public static Scene twoUp() {
         score = new Label("Wins " + String.valueOf(winCount));
         score.setTextFill(Color.CYAN);
-        score.setFont(Font.font("Arial", 18));
+        score.setFont(Font.font("Stencil", 18));
 
         //score.setStyle("-fx-font-family: Arial; -fx-font-size: 20;");
 
         score2 = new Label("Losses " + String.valueOf(loseCount));
         score2.setTextFill(Color.RED);
-        score2.setFont(Font.font("Arial", 18));
+        score2.setFont(Font.font("Stencil", 18));
 
 
         //score2.setStyle("-fx-font-family: Arial; -fx-font-size: 20;");
         currentCount = winCount - loseCount;
         score3 = new Label("Score " +(currentCount));
         score3.setTextFill(Color.LIMEGREEN);
-        score3.setFont(Font.font("Arial", 18));
+        score3.setFont(Font.font("Stencil", 18));
 
         button = new Button("Heads");
         button.setOnAction(e -> flipCoin("heads"));
@@ -120,9 +120,9 @@ public class OG extends Application {
                     logoutButton.setFont(Font.font(textSize));
                     scbutton.setFont(Font.font(textSize));
                     //playerName.setFont(Font.font(textSize));
-                    score.setFont(Font.font("Arial",textSize));
-                    score2.setFont(Font.font("Arial",textSize));
-                    score3.setFont(Font.font("Arial",textSize));
+                    score.setFont(Font.font("Stencil",textSize));
+                    score2.setFont(Font.font("Stencil",textSize));
+                    score3.setFont(Font.font("Stencil",textSize));
                 });
 
 
@@ -132,7 +132,7 @@ public class OG extends Application {
         passwordField = new PasswordField();
         passwordField.setPromptText("Password");
         playerName = new Label("");
-        playerName.setFont(new Font("Arial", 40));
+        playerName.setFont(new Font("Old English Text MT", 48));
         playerName.setTextFill(Color.WHITE);
         //playerName.setStyle("-fx-font-family: Arial; -fx-font-size: 20;");
         Button registerButton = new Button("Register");
