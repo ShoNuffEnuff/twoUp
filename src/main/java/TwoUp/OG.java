@@ -53,7 +53,8 @@ public class OG extends Application {
     static Button lbutton;
     static Button logoutButton;
     static Label cclabel;
-    static Button getCcbutton;
+    static Button bg;
+    static BorderPane root;
 
     private static final String DB_URL = "jdbc:mysql://localhost:3306/2up";
     private static final String DB_USER = "root";
@@ -94,6 +95,11 @@ public class OG extends Application {
     }
 
     public static Scene twoUp() {
+        bg = new Button("Change BG");
+        bg.setOnAction(event -> {
+            Background newBackground = createBackground();
+            root.setBackground(newBackground);
+        });
         score = new Label("Wins " + String.valueOf(winCount));
         score.setTextFill(Color.CYAN);
         score.setFont(Font.font("Stencil", 18));
@@ -119,7 +125,8 @@ public class OG extends Application {
         logoutButton = new Button("Logout");
         logoutButton.setOnAction(event -> {
             logoutUser();
-                });
+            resetBackground();
+        });
 
         cclabel = new Label("Pick a colour. Changes will apply when you close this window.");
         ccbutton = new Button("Change Colour");
@@ -158,20 +165,20 @@ public class OG extends Application {
         double[] textSizeValues = {18, 24, 30};
         final int[] currentSizeIndex = {0};
         scbutton.setOnAction(event -> {
-                    currentSizeIndex[0] = (currentSizeIndex[0] + 1) %
-                            textSizeValues.length;
-                    double textSize = textSizeValues[currentSizeIndex[0]];
+            currentSizeIndex[0] = (currentSizeIndex[0] + 1) %
+                    textSizeValues.length;
+            double textSize = textSizeValues[currentSizeIndex[0]];
 
-                    button.setFont(Font.font("Arial",textSize));
-                    button2.setFont(Font.font("Arial",textSize));
-                    lbutton.setFont(Font.font(textSize));
-                    logoutButton.setFont(Font.font(textSize));
-                    scbutton.setFont(Font.font(textSize));
-                    //playerName.setFont(Font.font(textSize));
-                    score.setFont(Font.font("Stencil",textSize));
-                    score2.setFont(Font.font("Stencil",textSize));
-                    score3.setFont(Font.font("Stencil",textSize));
-                });
+            button.setFont(Font.font("Arial",textSize));
+            button2.setFont(Font.font("Arial",textSize));
+            lbutton.setFont(Font.font(textSize));
+            logoutButton.setFont(Font.font(textSize));
+            scbutton.setFont(Font.font(textSize));
+            //playerName.setFont(Font.font(textSize));
+            score.setFont(Font.font("Stencil",textSize));
+            score2.setFont(Font.font("Stencil",textSize));
+            score3.setFont(Font.font("Stencil",textSize));
+        });
 
 
 
@@ -214,7 +221,7 @@ public class OG extends Application {
         gridPane.setAlignment(Pos.CENTER_LEFT);
         buttonPane.setHgap(0);
         buttonPane.setVgap(5);
-        //gridPane.add(usernameField, 0, 0);
+        buttonPane.add(bg, 0, 0);
         buttonPane.add(ccbutton, 1, 6);
         buttonPane.add(scbutton, 0, 6);
         //gridPane.add(loginButton, 0, 3);
@@ -255,7 +262,7 @@ public class OG extends Application {
         buttonCoinBox.getChildren().addAll(buttonBox, coinBox);
         buttonCoinBox.setAlignment(Pos.CENTER);
 
-        BorderPane root = new BorderPane();
+        root = new BorderPane();
         root.setBackground(createBackground());
         root.setCenter(gridPane);
         root.setLeft(buttonPane);
@@ -282,12 +289,37 @@ public class OG extends Application {
 
 
 
+    private static int imageIndex = -1; // Initialize with -1 to start at index 0
+
     private static Background createBackground() {
-        Image backgroundImage = new Image("C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\aussieflag.gif");
-        BackgroundImage backgroundImg = new BackgroundImage(backgroundImage, null, null, null,
-                new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, true));
+        String[] imagePaths = {
+                "C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\aussieflag.gif",
+                "C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\aussieflagGS.gif",
+                "C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\ausflag.jpg"
+        };
+
+        // Increment the index for the next image (cycling back to 0 if necessary)
+        imageIndex = (imageIndex + 1) % imagePaths.length;
+
+        // Get the image path at the current index
+        String imagePath = imagePaths[imageIndex];
+
+        Image backgroundImage = new Image(imagePath);
+        BackgroundImage backgroundImg = new BackgroundImage(
+                backgroundImage,
+                null,
+                null,
+                null,
+                new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, true)
+        );
+
         return new Background(backgroundImg);
     }
+
+    private static void resetBackground() {
+        imageIndex = -1; // Reset the image index to 0
+    }
+
 
     private static void spinCoins() {
         rt1 = new RotateTransition(Duration.seconds(2), coin1);
