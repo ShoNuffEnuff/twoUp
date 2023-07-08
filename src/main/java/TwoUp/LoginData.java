@@ -5,6 +5,7 @@ public class LoginData {
 
     static String username;
 
+
     private LoginData(){
         //private constructor
     }

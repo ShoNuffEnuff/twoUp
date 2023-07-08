@@ -23,9 +23,10 @@ public class ogController {
 
     @FXML
     private PasswordField passwordField;
-    private String storedUsername; // Variable to store the username
-    public ogController() {
 
+    public ogController() {
+        // Instantiate the LoginService
+        this.loginService = new LoginService();
     }
 
     public ogController(LoginService loginService) {
