@@ -29,10 +29,6 @@ public class ogController {
         this.loginService = new LoginService();
     }
 
-    /*public ogController(LoginService loginService) {
-        this.loginService = loginService;
-    }*/
-
     public void savedLoginData(){
         String username = usernameField.getText();
 

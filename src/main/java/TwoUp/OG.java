@@ -64,8 +64,8 @@ public class OG extends Application {
 
     private static Image headsImage1;
     private static Image tailsImage1;
-    static boolean headsCoin1 = true;  // Set initial value for coin1
-    static boolean headsCoin2 = true;  // Set initial value for coin2
+    static boolean headsCoin1 = true;
+    static boolean headsCoin2 = true;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -101,8 +101,8 @@ public class OG extends Application {
         score3.setText("Score " + currentCount);
     }
     public static Scene twoUp() {
-        flipLabel = new Label("Please Choose Heads or Tails.");
-        flipLabel.setFont(Font.font("Arial",20));
+        flipLabel = new Label("Come in spinner! Heads or Tails?");
+        flipLabel.setFont(Font.font("Elephant",24));
         flipLabel.setTextFill(Color.WHITE);
         bg = new Button("Change BG");
         bg.setFont(Font.font("Arial",14));
@@ -208,16 +208,6 @@ public class OG extends Application {
         playerName = new Label("");
         playerName.setFont(new Font("Old English Text MT", 48));
         playerName.setTextFill(Color.WHITE);
-        //playerName.setStyle("-fx-font-family: Arial; -fx-font-size: 20;");
-        //Button registerButton = new Button("Register");
-        //registerButton.setOnAction(e -> registerUser());
-
-        //Button loginButton = new Button("Login");
-        //loginButton.setOnAction(e -> loginUser());
-
-        //Button logoutButton = new Button("Logout");
-        //logoutButton.setOnAction(e -> logoutUser());
-
         GridPane gridPane = new GridPane();
         GridPane scorePane = new GridPane();
         GridPane buttonPane = new GridPane();
@@ -234,7 +224,6 @@ public class OG extends Application {
         });
 
         buttonPane.add(resetButton, 1, 0);
-
         gridPane.setPadding(new Insets(10));
         gridPane.setHgap(0);
         gridPane.setVgap(0);
@@ -261,10 +250,6 @@ public class OG extends Application {
         coin2.setFill(new ImagePattern(new Image("C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\gold2.png"), 0, 0, 1, 1, true));
         coin1.setStroke(Color.BLACK);
         coin2.setStroke(Color.BLACK);
-        //Region buttonBackground = new Region();
-        //buttonBackground.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
-        //buttonBackground.setPrefSize(300, 200);
-
         HBox buttonBox2 = new HBox();
         buttonBox2.setSpacing(10);
         buttonBox2.getChildren().addAll(bg, scbutton, ccbutton, lbutton, logoutButton, resetButton);
@@ -272,12 +257,6 @@ public class OG extends Application {
         buttonBox2.setPadding(new Insets(10));
 
 
-
-
-        //HBox buttonsBox = new HBox();
-        //buttonsBox.getChildren().add(buttonBox2); // Remove buttonBackground from the children list
-        //buttonsBox.setSpacing(10); // Set spacing between buttons
-        //buttonsBox.setAlignment(Pos.TOP_LEFT);
         HBox coinBox = new HBox(10);
         coinBox.getChildren().addAll(coin1, coin2);
         coinBox.setAlignment(Pos.BOTTOM_CENTER);
@@ -297,9 +276,7 @@ public class OG extends Application {
         VBox buttonCoinBox = new VBox(10);
         buttonCoinBox.getChildren().addAll(buttonBox, coinBox, flipLabel);
         buttonCoinBox.setAlignment(Pos.CENTER);
-        // Create a new VBox to hold the buttons in rows of three
-        //VBox buttonsBox = new VBox(10);
-        //buttonsBox.setAlignment(Pos.TOP_LEFT);
+
 
 // Create a new HBox to hold the buttons in rows of three
         // Create the first row of buttons
@@ -316,35 +293,14 @@ public class OG extends Application {
         VBox rowsBox = new VBox(10);
         rowsBox.setAlignment(Pos.BOTTOM_CENTER);
         rowsBox.getChildren().addAll(firstRow, secondRow);
-
         buttonBox2.getChildren().add(rowsBox);
-
         scoreBox.getChildren().add(rowsBox);
-
-        /*Region buttonBackground = new Region();
-        buttonBackground.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
-        buttonBackground.setPrefSize(300, 200);
-
-        VBox buttonBox2 = new VBox();
-        buttonBox2.setSpacing(10);
-        buttonBox2.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
-        buttonBox2.getChildren().addAll(bg, scbutton, ccbutton, lbutton, logoutButton, resetButton);
-        buttonBox2.setAlignment(Pos.BOTTOM_LEFT);
-        buttonBox2.setPadding(new Insets(10));
-
-        HBox buttonsBox = new HBox();
-        buttonsBox.getChildren().add(buttonBox2); // Remove buttonBackground from the children list
-        buttonsBox.setSpacing(10); // Set spacing between buttons
-        buttonsBox.setAlignment(Pos.TOP_LEFT);*/
-
-
         root = new BorderPane();
         root.setBackground(createBackground());
         root.setCenter(buttonCoinBox);
         //root.setLeft(buttonsBox);
         //root.setBottom(flipLabel);
         root.setRight(scoreBox);
-
         Scene scene = new Scene(root, 1000, 500);
         primaryStage.setTitle("2UP Game");
         primaryStage.setScene(scene);
@@ -358,7 +314,7 @@ public class OG extends Application {
         new LeaderBoard();
     }
 
-    private static int imageIndex = -1; // Initialize with -1 to start at index 0
+    private static int imageIndex = -1;
 
     private static Background createBackground() {
         String[] imagePaths = {
@@ -469,7 +425,7 @@ public class OG extends Application {
                 headsCoin2 = true;  // Set heads for coin2
                 updateCoinImages(headsCoin1, headsCoin2);
                 showAlertWithAnimation("Flip Result", "You Win!", "C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\winner.gif");
-                flipLabel.setText("You Win! Flip Again?");
+                flipLabel.setText("HEADS! Flip Again?");
             } else if (result.equals("tails") && result2.equals("tails") && choice.equals("tails")) {
                 winCount++;
                 //currentCount++;
@@ -479,7 +435,7 @@ public class OG extends Application {
                 headsCoin2 = false;  // Set tails for coin2
                 updateCoinImages(headsCoin1, headsCoin2);
                 showAlertWithAnimation("Flip Result", "You Win!", "C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\winner.gif");
-                flipLabel.setText("You Win! Flip Again?");
+                flipLabel.setText("TAILED THEM! Flip Again?");
             } else if (result.equals("tails") && result2.equals("tails") && choice.equals("heads")) {
                 loseCount++;
                 //currentCount++;
