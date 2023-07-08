@@ -55,7 +55,7 @@ public class LeaderBoard {
         TableColumn<Score, String> playerColumn = new TableColumn<>("Player   -    " + "Press Escape to close.");
         playerColumn.setCellValueFactory(new PropertyValueFactory<>("player"));
         playerColumn.setSortable(false);
-        TableColumn<Score, Integer> scoreColumn = new TableColumn<>("High Score   -    " + "pgUp/pgDn to change text size.");
+        TableColumn<Score, Integer> scoreColumn = new TableColumn<>("High Score   -    " + "pgUp/pgDn to change size.");
         scoreColumn.setCellValueFactory(new PropertyValueFactory<>("score"));
         scoreColumn.setSortable(false);
         tableView = new TableView<>();

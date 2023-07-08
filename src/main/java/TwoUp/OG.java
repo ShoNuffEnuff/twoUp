@@ -30,7 +30,7 @@ public class OG extends Application {
 
     static int winCount = 0;
     static int loseCount = 0;
-    static int currentCount = 0;
+    static int currentCount = winCount - loseCount;
     static Label score;
     static Label score2;
     static Label score3;
@@ -53,7 +53,7 @@ public class OG extends Application {
     static Button bg;
     static BorderPane root;
     static Button resetButton;
-    static Label ruleLabel;
+    static Label flipLabel;
 
     private static final String DB_URL = "jdbc:mysql://localhost:3306/2up";
     private static final String DB_USER = "root";
@@ -96,28 +96,34 @@ public class OG extends Application {
         primaryStage.setScene(loginScene);
         primaryStage.show();
     }
-
+    private static void updateScore3() {
+        currentCount = winCount - loseCount;
+        score3.setText("Score " + currentCount);
+    }
     public static Scene twoUp() {
-
+        flipLabel = new Label("Please Choose Heads or Tails.");
+        flipLabel.setFont(Font.font("Arial",20));
+        flipLabel.setTextFill(Color.WHITE);
         bg = new Button("Change BG");
         bg.setFont(Font.font("Arial",14));
         bg.setOnAction(event -> {
             Background newBackground = createBackground();
             root.setBackground(newBackground);
         });
-        score = new Label("Wins " + String.valueOf(winCount));
+        score = new Label("Wins " + winCount);
         score.setTextFill(Color.CYAN);
         score.setFont(Font.font("Stencil", 18));
 
         //score.setStyle("-fx-font-family: Arial; -fx-font-size: 20;");
 
-        score2 = new Label("Losses " + String.valueOf(loseCount));
+        score2 = new Label("Losses " + loseCount);
         score2.setTextFill(Color.RED);
         score2.setFont(Font.font("Stencil", 18));
 
         //score2.setStyle("-fx-font-family: Arial; -fx-font-size: 20;");
-        currentCount = winCount - loseCount;
-        score3 = new Label("Score " +(currentCount));
+        //currentCount = winCount - loseCount;
+        score3 = new Label("Score " + currentCount);
+        //score3.setText("Score " +(currentCount));
         score3.setTextFill(Color.LIMEGREEN);
         score3.setFont(Font.font("Stencil", 18));
         //ruleLabel = new Label("");
@@ -289,8 +295,8 @@ public class OG extends Application {
         buttonBox.getChildren().addAll(button, button2);
         buttonBox.setAlignment(Pos.CENTER);
         VBox buttonCoinBox = new VBox(10);
-        buttonCoinBox.getChildren().addAll(buttonBox, coinBox);
-        buttonCoinBox.setAlignment(Pos.BOTTOM_CENTER);
+        buttonCoinBox.getChildren().addAll(buttonBox, coinBox, flipLabel);
+        buttonCoinBox.setAlignment(Pos.CENTER);
         // Create a new VBox to hold the buttons in rows of three
         //VBox buttonsBox = new VBox(10);
         //buttonsBox.setAlignment(Pos.TOP_LEFT);
@@ -336,7 +342,7 @@ public class OG extends Application {
         root.setBackground(createBackground());
         root.setCenter(buttonCoinBox);
         //root.setLeft(buttonsBox);
-        //root.setBottom();
+        //root.setBottom(flipLabel);
         root.setRight(scoreBox);
 
         Scene scene = new Scene(root, 1000, 500);
@@ -456,49 +462,65 @@ public class OG extends Application {
 
             if (result.equals("heads") && result2.equals("heads") && choice.equals("heads")) {
                 winCount++;
+                //currentCount++;
                 score.setText("Wins " + winCount);
+                //score3.setText("Score " + currentCount);
                 headsCoin1 = true;  // Set heads for coin1
                 headsCoin2 = true;  // Set heads for coin2
                 updateCoinImages(headsCoin1, headsCoin2);
                 showAlertWithAnimation("Flip Result", "You Win!", "C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\winner.gif");
+                flipLabel.setText("You Win! Flip Again?");
             } else if (result.equals("tails") && result2.equals("tails") && choice.equals("tails")) {
                 winCount++;
+                //currentCount++;
                 score.setText("Wins " + winCount);
+                score3.setText("Score " + currentCount);
                 headsCoin1 = false;  // Set tails for coin1
                 headsCoin2 = false;  // Set tails for coin2
                 updateCoinImages(headsCoin1, headsCoin2);
                 showAlertWithAnimation("Flip Result", "You Win!", "C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\winner.gif");
+                flipLabel.setText("You Win! Flip Again?");
             } else if (result.equals("tails") && result2.equals("tails") && choice.equals("heads")) {
                 loseCount++;
+                //currentCount++;
                 score2.setText("Losses " + loseCount);
+                score3.setText("Score " + currentCount);
                 headsCoin1 = false;  // Set tails for coin1
                 headsCoin2 = false;  // Set tails for coin2
                 updateCoinImages(headsCoin1, headsCoin2);
                 showAlertWithAnimation("Flip Result", "You Lose!", "C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\loser.gif");
+                flipLabel.setText("You Lose! Flip Again?");
             } else if (result.equals("heads") && result2.equals("heads") && choice.equals("tails")) {
                 loseCount++;
+                //currentCount++;
                 score2.setText("Losses " + loseCount);
+                score3.setText("Score " + currentCount);
                 headsCoin1 = true;  // Set heads for coin1
                 headsCoin2 = true;  // Set heads for coin2
                 updateCoinImages(headsCoin1, headsCoin2);
                 showAlertWithAnimation("Flip Result", "You Lose!", "C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\loser.gif");
+                flipLabel.setText("You Lose! Flip Again?");
             } else if (result.equals("tails") && result2.equals("heads") && choice.equals("tails")) {
                 headsCoin1 = false;  // Set tails for coin1
                 headsCoin2 = true;  // Set heads for coin2
                 updateCoinImages(headsCoin1, headsCoin2);
                 showAlert("Flip Again", "Flip again!");
+                flipLabel.setText("Odds! Flip Again?");
             } else if (result.equals("tails") && result2.equals("heads") && choice.equals("heads")) {
                 headsCoin1 = false;  // Set tails for coin1
                 headsCoin2 = true;  // Set heads for coin2
                 updateCoinImages(headsCoin1, headsCoin2);
                 showAlert("Flip Again", "Flip again!");
+                flipLabel.setText("Odds! Flip Again?");
             } else {
                 headsCoin1 = true;  // Set heads for coin1
                 headsCoin2 = false;  // Set tails for coin2
                 updateCoinImages(headsCoin1, headsCoin2);
                 showAlert("Flip Again", "Flip again!");
+                flipLabel.setText("Odds! Flip Again?");
             }
             saveScoresToDatabase();
+            updateScore3();
         });
 
         delay.play();
