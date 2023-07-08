@@ -26,8 +26,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import static TwoUp.LoginData.username;
-
 public class OG extends Application {
 
     static int winCount = 0;
@@ -55,6 +53,7 @@ public class OG extends Application {
     static Button bg;
     static BorderPane root;
     static Button resetButton;
+    static Label ruleLabel;
 
     private static final String DB_URL = "jdbc:mysql://localhost:3306/2up";
     private static final String DB_USER = "root";
@@ -101,6 +100,7 @@ public class OG extends Application {
     public static Scene twoUp() {
 
         bg = new Button("Change BG");
+        bg.setFont(Font.font("Arial",14));
         bg.setOnAction(event -> {
             Background newBackground = createBackground();
             root.setBackground(newBackground);
@@ -120,27 +120,31 @@ public class OG extends Application {
         score3 = new Label("Score " +(currentCount));
         score3.setTextFill(Color.LIMEGREEN);
         score3.setFont(Font.font("Stencil", 18));
-
+        //ruleLabel = new Label("");
         button = new Button("Heads");
+        button.setFont(Font.font("Arial",14));
         button.setOnAction(e -> flipCoin("heads"));
 
         button2 = new Button("Tails");
+        button2.setFont(Font.font("Arial",14));
         button2.setOnAction(e -> flipCoin("tails"));
         logoutButton = new Button("Logout");
+        logoutButton.setFont(Font.font("Arial",14));
         logoutButton.setOnAction(event -> {
             logoutUser();
             resetBackground();
         });
 
-        cclabel = new Label("Pick a colour. Changes will apply when you close this window.");
+        cclabel = new Label("Pick a colour");
         ccbutton = new Button("Change Colour");
+        ccbutton.setFont(Font.font("Arial",14));
         ccbutton.setOnAction(event -> {
             Stage colorChooserStage = new Stage();
             ColorPicker colorPicker = new ColorPicker();
             Button applyButton = new Button("Apply");
 
             applyButton.setOnAction(e -> {
-                Color selectedColor = colorPicker.getValue();
+               Color selectedColor = colorPicker.getValue();
 
                 button.setTextFill(selectedColor);
                 button2.setTextFill(selectedColor);
@@ -164,9 +168,11 @@ public class OG extends Application {
             colorChooserStage.show();
         });
         lbutton = new Button("Leaderboard");
+        lbutton.setFont(Font.font("Arial",14));
         lbutton.setOnAction(e -> leaderBoard());
         scbutton = new Button("Change Size");
-        double[] textSizeValues = {12, 18, 24};
+        scbutton.setFont(Font.font("Arial",14));
+        double[] textSizeValues = {14, 20, 26};
         final int[] currentSizeIndex = {0};
         scbutton.setOnAction(event -> {
             currentSizeIndex[0] = (currentSizeIndex[0] + 1) %
@@ -176,6 +182,9 @@ public class OG extends Application {
             button.setFont(Font.font("Arial",textSize));
             button2.setFont(Font.font("Arial",textSize));
             lbutton.setFont(Font.font(textSize));
+            bg.setFont(Font.font(textSize));
+            resetButton.setFont(Font.font(textSize));
+            ccbutton.setFont(Font.font(textSize));
             logoutButton.setFont(Font.font(textSize));
             scbutton.setFont(Font.font(textSize));
             //playerName.setFont(Font.font(textSize));
@@ -207,6 +216,7 @@ public class OG extends Application {
         GridPane scorePane = new GridPane();
         GridPane buttonPane = new GridPane();
         resetButton = new Button("Reset Colours");
+        resetButton.setFont(Font.font("Arial",14));
         resetButton.setOnAction(event -> {
             // Reset the colors to their original values
             button.setTextFill(Color.BLACK);
@@ -280,7 +290,7 @@ public class OG extends Application {
         buttonBox.setAlignment(Pos.CENTER);
         VBox buttonCoinBox = new VBox(10);
         buttonCoinBox.getChildren().addAll(buttonBox, coinBox);
-        buttonCoinBox.setAlignment(Pos.CENTER);
+        buttonCoinBox.setAlignment(Pos.BOTTOM_CENTER);
         // Create a new VBox to hold the buttons in rows of three
         //VBox buttonsBox = new VBox(10);
         //buttonsBox.setAlignment(Pos.TOP_LEFT);
@@ -370,19 +380,45 @@ public class OG extends Application {
         if (imagePath.equals("C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\aussieflag.gif")) {
             headsImage1 = new Image("C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\gold1.png");
             tailsImage1 = new Image("C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\gold2.png");
+            button.setTextFill(Color.BLACK);
+            button2.setTextFill(Color.BLACK);
+            score.setTextFill(Color.CYAN);
+            score2.setTextFill(Color.RED);
+            score3.setTextFill(Color.LIMEGREEN);
+            playerName.setTextFill(Color.WHITE);
         } else if (imagePath.equals("C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\aussieflagGS.gif")) {
             headsImage1 = new Image("C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\silver1.jpg");
             tailsImage1 = new Image("C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\silver2.jpg");
+            button.setTextFill(Color.BLACK);
+            button2.setTextFill(Color.BLACK);
+            score.setTextFill(Color.WHITE);
+            score2.setTextFill(Color.WHITE);
+            score3.setTextFill(Color.WHITE);
+            playerName.setTextFill(Color.WHITE);
         } else if (imagePath.equals("C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\ausflagGS.jpg")) {
             headsImage1 = new Image("C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\silver1.jpg");
             tailsImage1 = new Image("C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\silver2.jpg");
+            button.setTextFill(Color.BLACK);
+            button2.setTextFill(Color.BLACK);
+            score.setTextFill(Color.WHITE);
+            score2.setTextFill(Color.WHITE);
+            score3.setTextFill(Color.WHITE);
+            playerName.setTextFill(Color.WHITE);
         } else {
             headsImage1 = new Image("C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\gold1.png");
             tailsImage1 = new Image("C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\gold2.png");
+            button.setTextFill(Color.BLACK);
+            button2.setTextFill(Color.BLACK);
+            score.setTextFill(Color.CYAN);
+            score2.setTextFill(Color.RED);
+            score3.setTextFill(Color.LIMEGREEN);
+            playerName.setTextFill(Color.WHITE);
         }
         // Update the coin images
         headsCoin2 = false;
         updateCoinImages(headsCoin1, headsCoin2);
+
+
         return new Background(backgroundImg);
     }
 
@@ -462,9 +498,7 @@ public class OG extends Application {
                 updateCoinImages(headsCoin1, headsCoin2);
                 showAlert("Flip Again", "Flip again!");
             }
-            //ogController controller = new ogController();
             saveScoresToDatabase();
-            System.out.println("Username: " + username);
         });
 
         delay.play();
