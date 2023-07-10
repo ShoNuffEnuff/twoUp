@@ -135,6 +135,7 @@ public class OG extends Application {
         button.setOnAction(e -> {
             flipCoin("heads");
             button.setDisable(true);
+            button2.setDisable(true);
         });
 
         button2 = new Button("Tails");
@@ -142,6 +143,7 @@ public class OG extends Application {
         button2.setOnAction(e -> {
             flipCoin("tails");
             button2.setDisable(true);
+            button.setDisable(true);
         });
         logoutButton = new Button("Logout");
         logoutButton.setFont(Font.font("Arial",14));
@@ -154,7 +156,11 @@ public class OG extends Application {
         ccbutton = new Button("Change Colour");
         ccbutton.setFont(Font.font("Arial",14));
         ccbutton.setOnAction(event -> {
+            ccbutton.setDisable(true);
             Stage colorChooserStage = new Stage();
+            colorChooserStage.setOnCloseRequest(e -> {
+                ccbutton.setDisable(false);
+            });
             ColorPicker colorPicker = new ColorPicker();
             Button applyButton = new Button("Apply");
 
@@ -170,6 +176,7 @@ public class OG extends Application {
                 flipLabel.setTextFill(selectedColor);
 
                 colorChooserStage.close(); // Close the color chooser stage after applying the changes
+                ccbutton.setDisable(false);
             });
 
             VBox colorChooserLayout = new VBox(10);
