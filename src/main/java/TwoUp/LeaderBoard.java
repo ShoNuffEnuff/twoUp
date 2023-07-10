@@ -21,7 +21,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-import static TwoUp.OG.lbutton;
+import static TwoUp.Main.lbutton;
 
 public class LeaderBoard {
     private final int INITIAL_TEXT_SIZE = 12;

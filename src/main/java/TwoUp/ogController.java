@@ -7,7 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
-import static TwoUp.OG.twoUp;
+import static TwoUp.Main.twoUp;
 
 public class ogController {
     private LoginService loginService;
@@ -76,7 +76,7 @@ public class ogController {
             LoginData.getInstance();
             LoginData.setUsername(username);
             twoUp();
-            OG.playerName.setText(username);
+            Main.playerName.setText(username);
 
 
 
