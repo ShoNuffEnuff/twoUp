@@ -150,7 +150,7 @@ public class OG extends Application {
             Button applyButton = new Button("Apply");
 
             applyButton.setOnAction(e -> {
-               Color selectedColor = colorPicker.getValue();
+                Color selectedColor = colorPicker.getValue();
 
                 button.setTextFill(selectedColor);
                 button2.setTextFill(selectedColor);
@@ -175,7 +175,10 @@ public class OG extends Application {
         });
         lbutton = new Button("Leaderboard");
         lbutton.setFont(Font.font("Arial",14));
-        lbutton.setOnAction(e -> leaderBoard());
+        lbutton.setOnAction(e -> {
+            leaderBoard();
+            lbutton.setDisable(true);
+        });
         scbutton = new Button("Change Size");
         scbutton.setFont(Font.font("Arial",14));
         double[] textSizeValues = {14, 20, 26};
@@ -306,6 +309,7 @@ public class OG extends Application {
         primaryStage.setScene(scene);
         //primaryStage.setFullScreen(true);
         primaryStage.show();
+        primaryStage.setResizable(false);
 
         return scene;
     }
@@ -484,37 +488,37 @@ public class OG extends Application {
 
 
 
-private static void updateCoinImages(boolean headsCoin1, boolean headsCoin2) {
+    private static void updateCoinImages(boolean headsCoin1, boolean headsCoin2) {
         coin1.setFill(new ImagePattern(headsCoin1 ? headsImage1 : tailsImage1));
         coin2.setFill(new ImagePattern(headsCoin2 ? headsImage1 : tailsImage1));
-        }
+    }
 
-private static void showAlert(String title, String message) {
+    private static void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.show();
-        }
+    }
 
-private static String saveScoresToDatabase() {
+    private static String saveScoresToDatabase() {
         String username = LoginData.getUsername();
 
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-        String query = "INSERT INTO scores (player, wins, losses, highscore) VALUES (?, ?, ?, ?)";
-        PreparedStatement statement = connection.prepareStatement(query);
-        statement.setString(1, username);
-        statement.setInt(2, winCount);
-        statement.setInt(3, loseCount);
-        statement.setInt(4, winCount - loseCount);
-        statement.executeUpdate();
+            String query = "INSERT INTO scores (player, wins, losses, highscore) VALUES (?, ?, ?, ?)";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, username);
+            statement.setInt(2, winCount);
+            statement.setInt(3, loseCount);
+            statement.setInt(4, winCount - loseCount);
+            statement.executeUpdate();
         } catch (SQLException e) {
-        showAlert("Database Error", "Failed to save scores to the database: " + e.getMessage());
+            showAlert("Database Error", "Failed to save scores to the database: " + e.getMessage());
         }
-        return username;
-        }
+        return ("Scores updated for " + username);
+    }
 
-private static void showAlertWithAnimation(String title, String message, String gifFileName) {
+    private static void showAlertWithAnimation(String title, String message, String gifFileName) {
         Alert alert = new Alert(Alert.AlertType.NONE);
         alert.setTitle(title);
         alert.setHeaderText(null);
@@ -531,23 +535,23 @@ private static void showAlertWithAnimation(String title, String message, String 
 
         PauseTransition delay = new PauseTransition(Duration.seconds(3));
         delay.setOnFinished(e -> {
-        alert.setResult(ButtonType.CLOSE);
-        alert.close();
+            alert.setResult(ButtonType.CLOSE);
+            alert.close();
         });
 
         alert.show();
         delay.play();
-        }
+    }
 
-private static String getCoinResult() {
+    private static String getCoinResult() {
         return Math.random() < 0.5 ? "heads" : "tails";
-        }
+    }
 
-private static String getCoinResult2() {
+    private static String getCoinResult2() {
         return Math.random() < 0.5 ? "heads" : "tails";
-        }
+    }
 
-public static void main(String[] args) {
+    public static void main(String[] args) {
         launch(args);
-        }
-        }
+    }
+}

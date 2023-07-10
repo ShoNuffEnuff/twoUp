@@ -21,6 +21,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
+import static TwoUp.OG.lbutton;
+
 public class LeaderBoard {
     private final int INITIAL_TEXT_SIZE = 12;
     private int textSize = INITIAL_TEXT_SIZE;
@@ -40,9 +42,13 @@ public class LeaderBoard {
         scene.getStylesheets().add(css);
         tableView.getStyleClass().add("transparent-table-view");
         scene.addEventHandler(KeyEvent.KEY_PRESSED, this::handleKeyPressed);
+        leaderStage.setOnCloseRequest(e -> {
+            lbutton.setDisable(false);
+        });
         scene.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ESCAPE) {
                 leaderStage.close();
+                lbutton.setDisable(false);
             }
         });
 
