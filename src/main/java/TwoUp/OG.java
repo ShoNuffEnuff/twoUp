@@ -93,6 +93,9 @@ public class OG extends Application {
     public static void logoutUser() {
         // Close the twoUp scene and open the login scene
         primaryStage.close();
+        winCount = 0;
+        loseCount = 0;
+        currentCount = 0;
         primaryStage.setScene(loginScene);
         primaryStage.show();
     }
@@ -129,11 +132,17 @@ public class OG extends Application {
         //ruleLabel = new Label("");
         button = new Button("Heads");
         button.setFont(Font.font("Arial",14));
-        button.setOnAction(e -> flipCoin("heads"));
+        button.setOnAction(e -> {
+            flipCoin("heads");
+            button.setDisable(true);
+        });
 
         button2 = new Button("Tails");
         button2.setFont(Font.font("Arial",14));
-        button2.setOnAction(e -> flipCoin("tails"));
+        button2.setOnAction(e -> {
+            flipCoin("tails");
+            button2.setDisable(true);
+        });
         logoutButton = new Button("Logout");
         logoutButton.setFont(Font.font("Arial",14));
         logoutButton.setOnAction(event -> {
@@ -158,6 +167,7 @@ public class OG extends Application {
                 score2.setTextFill(selectedColor);
                 score3.setTextFill(selectedColor);
                 playerName.setTextFill(selectedColor);
+                flipLabel.setTextFill(selectedColor);
 
                 colorChooserStage.close(); // Close the color chooser stage after applying the changes
             });
@@ -224,6 +234,7 @@ public class OG extends Application {
             score2.setTextFill(Color.RED);
             score3.setTextFill(Color.LIMEGREEN);
             playerName.setTextFill(Color.WHITE);
+            flipLabel.setTextFill(Color.WHITE);
         });
 
         buttonPane.add(resetButton, 1, 0);
@@ -311,6 +322,7 @@ public class OG extends Application {
         primaryStage.show();
         primaryStage.setResizable(false);
 
+
         return scene;
     }
 
@@ -361,6 +373,7 @@ public class OG extends Application {
             score2.setTextFill(Color.WHITE);
             score3.setTextFill(Color.WHITE);
             playerName.setTextFill(Color.WHITE);
+            flipLabel.setTextFill(Color.WHITE);
         } else if (imagePath.equals("C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\ausflagGS.jpg")) {
             headsImage1 = new Image("C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\silver1.jpg");
             tailsImage1 = new Image("C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\silver2.jpg");
@@ -370,6 +383,7 @@ public class OG extends Application {
             score2.setTextFill(Color.WHITE);
             score3.setTextFill(Color.WHITE);
             playerName.setTextFill(Color.WHITE);
+            flipLabel.setTextFill(Color.WHITE);
         } else {
             headsImage1 = new Image("C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\gold1.png");
             tailsImage1 = new Image("C:\\Users\\Sho\\IdeaProjects\\TwoUp\\src\\main\\resources\\TwoUp\\img\\gold2.png");
@@ -481,6 +495,8 @@ public class OG extends Application {
             }
             saveScoresToDatabase();
             updateScore3();
+            button.setDisable(false);
+            button2.setDisable(false);
         });
 
         delay.play();
